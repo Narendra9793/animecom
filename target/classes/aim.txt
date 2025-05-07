@@ -1,0 +1,34 @@
+Project Anime Community
+
+User:-
+
+can register
+can login
+authenticated and authorized
+
+1)------------------
+Anime k regarding question raise kar sakte ho with image in community
+kisi k question ka answer bhi kar sakte ho with image.
+answer par bhi comment kar sakte ho with image.
+
+2)-----------------------------------------
+Anime k regarding theory with image bana  sakte ho
+---us theory k regarding question raise kar sakte ho with image in community
+------usi question ka answer bhi kar sakte ho with image.
+-----------usi answer par bhi comment kar sakte ho with image.
+
+3)---------------------------------------
+Anime k post ko create kar sakte ho
+--like comment save and download
+
+4)-----------------------------------------------------
+User can ask questions to AI
+
+5)-----------------------------------------------
+user can chat with Admin
+
+Admin:-
+
+1) Kisi bhi post, Question, Theory ya comment ko delete ye down kar sakta h
+2) Kisi bhi user ko suspend kar sakta h for kuch din
+
