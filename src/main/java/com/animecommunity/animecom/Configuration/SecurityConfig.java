@@ -1,58 +1,107 @@
 package com.animecommunity.animecom.Configuration;
 
-
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.animecommunity.animecom.Security.JwtAuthenticationEntryPoint;
 import com.animecommunity.animecom.Security.JwtAuthenticationFilter;
-
-
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    private final JwtAuthenticationEntryPoint point;
-    private final JwtAuthenticationFilter filter;
+    @Autowired
+    @Qualifier("getUserDetailsService") // DAO-based (DB) UserDetailsService
+    private UserDetailsService userDetailsService;
 
     @Autowired
-    public SecurityConfig(JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
-                          JwtAuthenticationFilter jwtAuthenticationFilter) {
-        this.point = jwtAuthenticationEntryPoint;
-        this.filter = jwtAuthenticationFilter;
+    private JwtAuthenticationFilter filter;
+
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+
+    // ==== AUTH PROVIDERS ====
+
+    @Bean
+    public DaoAuthenticationProvider inMemoryAuthProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setUserDetailsService(inMemoryUserDetailsService());
+        provider.setPasswordEncoder(passwordEncoder);
+        return provider;
     }
 
+    @Bean
+    public DaoAuthenticationProvider daoAuthProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setUserDetailsService(userDetailsService);
+        provider.setPasswordEncoder(passwordEncoder);
+        return provider;
+    }
 
-    
+    // ==== AUTH MANAGER ====
+
+    @Bean
+    public AuthenticationManager authenticationManager() {
+        return new ProviderManager(List.of(
+                inMemoryAuthProvider(),
+                daoAuthProvider()
+        ));
+    }
+
+    // ==== IN-MEMORY USER ====
+
+    @Bean("inMemoryUserDetailsService")
+    public UserDetailsService inMemoryUserDetailsService() {
+        UserDetails admin = User.builder()
+                .username("Levi42")
+                .password(passwordEncoder.encode("Narendra@178"))
+                .roles("ADMIN")
+                .build();
+        return new InMemoryUserDetailsManager(admin);
+    }
+
+    // ==== SECURITY FILTER CHAIN ====
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable())
+        http
+            .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/**").permitAll()
-                .requestMatchers("/home/**").permitAll()
+                .requestMatchers("/home/**", "/auth/**").permitAll()
+                .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 .requestMatchers("/api/user/**").hasRole("USER")
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()
             )
-            .exceptionHandling(ex -> ex.authenticationEntryPoint(point))
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-    
-        http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authenticationProvider(inMemoryAuthProvider())
+            .authenticationProvider(daoAuthProvider())
+            .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
-    
 
+    // ==== PASSWORD ENCODER ====
 
-
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 }

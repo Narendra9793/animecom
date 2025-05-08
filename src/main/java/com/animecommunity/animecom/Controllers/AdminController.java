@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/admin/")
 public class AdminController {
-    @GetMapping("")
+    @GetMapping("test")
     @PreAuthorize("hasRole('ADMIN')")
     public String getMethodName() {
         return "This is  adminpage";

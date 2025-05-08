@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -89,29 +90,33 @@ public class AuthController {
     }
 
         //http://localhost:5050/auth/admin-login
-        // @PostMapping("/admin-login")
-        // public ResponseEntity<JwtResponse> Adminlogin(@RequestBody JwtRequest request) {
-        //     System.out.println(request.getUsername());
-        //     System.out.println(request.getPassword());
-        //     this.doAuthenticate(request.getEmail(), request.getPassword());
-            
-    
-        //     UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
-        //     String token = this.helper.generateToken(userDetails);
-    
-        //     System.out.println("Token : " + token);
-        //     //////////////////////////
-        //     User loggedUser=this.userRepository.getUserByusername(request.getEmail());
-        //     this.userRepository.save(loggedUser);
-        //     //////////////////////////
-        //     JwtResponse response = JwtResponse.builder()
-        //     .jwtToken(token)
-        //     .username(userDetails.getUsername())
-        //     .userId(loggedUser.getUserId())
-        //     .build();
+        @PostMapping("/admin-login")
+        public ResponseEntity<JwtResponse> adminLogin(@RequestBody JwtRequest request) {
+            System.out.println("Admin password: " + request.getUsername());
+            System.out.println("Admin email: " + request.getEmail());
+            System.out.println("Admin password: " + request.getPassword());
         
-        //     return new ResponseEntity<>(response, HttpStatus.OK);
-        // }
+            // Authenticate against in-memory user
+            try {
+                Authentication authentication = manager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
+                );
+        
+                UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+                String token = this.helper.generateToken(userDetails); // your JwtHelper
+        
+                JwtResponse response = JwtResponse.builder()
+                    .jwtToken(token)
+                    .username(userDetails.getUsername())
+                    .build();
+        
+                return new ResponseEntity<>(response, HttpStatus.OK);
+        
+            } catch (BadCredentialsException e) {
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+        }
+        
 
 
     // http://localhost:7070/api/auth/allpublicpost

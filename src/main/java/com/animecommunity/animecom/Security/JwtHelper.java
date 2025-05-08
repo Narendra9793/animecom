@@ -1,10 +1,14 @@
 package com.animecommunity.animecom.Security;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
+
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -48,10 +52,25 @@ public class JwtHelper {
     }
 
     //generate token for user
-    public String generateToken(UserDetails userDetails) {
-        Map<String, Object> claims = new HashMap<>();
-        return doGenerateToken(claims, userDetails.getUsername());
-    }
+    // public String generateToken(UserDetails userDetails) {
+    //     Map<String, Object> claims = new HashMap<>();
+    //     return doGenerateToken(claims, userDetails.getUsername());
+    // }
+    // Generate token with roles included
+public String generateToken(UserDetails userDetails) {
+    Map<String, Object> claims = new HashMap<>();
+    System.out.println("USerdeatais   " + userDetails.getAuthorities());
+    System.out.println("USerdeatais   " + userDetails.getUsername());
+    System.out.println("USerdeatais   " + userDetails.getPassword());
+    // Add roles to claims
+    Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
+    claims.put("roles", authorities.stream()
+            .map(GrantedAuthority::getAuthority)
+            .collect(Collectors.toList()));
+
+    return doGenerateToken(claims, userDetails.getUsername());
+}
+
 
     //while creating the token -
     //1. Define  claims of the token, like Issuer, Expiration, Subject, and the ID

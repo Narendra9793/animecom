@@ -32,6 +32,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 
     @Autowired
+    @Qualifier("getUserDetailsService")
     private UserDetailsService userDetailsService;
 
 
@@ -39,6 +40,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     public void setUserDetailsService(UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
+
+    @Override
+protected boolean shouldNotFilter(HttpServletRequest request) {
+    String path = request.getRequestURI();
+    System.out.println("shouldNotFilter called for: " + request.getRequestURI());
+
+    return path.startsWith("/auth/") || path.startsWith("/home/");
+}
+
 
 
     @Override
@@ -50,6 +60,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         logger.info(" Header :  {}", requestHeader);
         String username = null;
         String token = null;
+        System.out.println("JWT filter called on:=================================================================== " + request.getRequestURI());
+
         if (requestHeader != null && requestHeader.startsWith("Bearer")) {
             //looking good
             token = requestHeader.substring(7);
