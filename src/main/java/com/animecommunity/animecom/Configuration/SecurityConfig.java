@@ -29,7 +29,6 @@ import com.animecommunity.animecom.Security.JwtAuthenticationFilter;
 public class SecurityConfig {
 
     @Autowired
-    @Qualifier("getUserDetailsService") // DAO-based (DB) UserDetailsService
     private UserDetailsService userDetailsService;
 
     @Autowired
@@ -40,13 +39,6 @@ public class SecurityConfig {
 
     // ==== AUTH PROVIDERS ====
 
-    @Bean
-    public DaoAuthenticationProvider inMemoryAuthProvider() {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(inMemoryUserDetailsService());
-        provider.setPasswordEncoder(passwordEncoder);
-        return provider;
-    }
 
     @Bean
     public DaoAuthenticationProvider daoAuthProvider() {
@@ -61,21 +53,8 @@ public class SecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager() {
         return new ProviderManager(List.of(
-                inMemoryAuthProvider(),
                 daoAuthProvider()
         ));
-    }
-
-    // ==== IN-MEMORY USER ====
-
-    @Bean("inMemoryUserDetailsService")
-    public UserDetailsService inMemoryUserDetailsService() {
-        UserDetails admin = User.builder()
-                .username("Levi42")
-                .password(passwordEncoder.encode("Narendra@178"))
-                .roles("ADMIN")
-                .build();
-        return new InMemoryUserDetailsManager(admin);
     }
 
     // ==== SECURITY FILTER CHAIN ====
@@ -91,7 +70,6 @@ public class SecurityConfig {
                 .anyRequest().permitAll()
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authenticationProvider(inMemoryAuthProvider())
             .authenticationProvider(daoAuthProvider())
             .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
 

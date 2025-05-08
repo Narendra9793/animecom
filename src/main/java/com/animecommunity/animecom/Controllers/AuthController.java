@@ -92,29 +92,27 @@ public class AuthController {
         //http://localhost:5050/auth/admin-login
         @PostMapping("/admin-login")
         public ResponseEntity<JwtResponse> adminLogin(@RequestBody JwtRequest request) {
-            System.out.println("Admin password: " + request.getUsername());
-            System.out.println("Admin email: " + request.getEmail());
-            System.out.println("Admin password: " + request.getPassword());
+            System.out.println("-----------------------------------------"+ request.getEmail());
+            System.out.println(request.getPassword());
+            this.doAuthenticate(request.getEmail(), request.getPassword());
         
-            // Authenticate against in-memory user
-            try {
-                Authentication authentication = manager.authenticate(
-                    new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
-                );
-        
-                UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-                String token = this.helper.generateToken(userDetails); // your JwtHelper
-        
-                JwtResponse response = JwtResponse.builder()
-                    .jwtToken(token)
-                    .username(userDetails.getUsername())
-                    .build();
-        
-                return new ResponseEntity<>(response, HttpStatus.OK);
-        
-            } catch (BadCredentialsException e) {
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-            }
+
+            UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
+            String token = this.helper.generateToken(userDetails);
+
+            System.out.println("Token : " + token);
+             //////////////////////////
+            User loggedUser=this.userRepository.getUserByemail(request.getEmail());
+            this.userRepository.save(loggedUser);
+            System.out.println(loggedUser);
+            //////////////////////////
+        JwtResponse response = JwtResponse.builder()
+        .jwtToken(token)
+        .username(userDetails.getUsername())
+        .userId(loggedUser.getUserId())
+        .build();
+    
+        return new ResponseEntity<>(response, HttpStatus.OK);
         }
         
 
@@ -164,6 +162,15 @@ public class AuthController {
 
 
     }
+
+        //http://localhost:5050/auth/admin-register
+        @PostMapping("/admin-register")
+        public String adminRegister(@RequestBody Credentials cred){
+            String str = this.userService.addAdmin(cred);
+            return "Admin added with name " + str; 
+        }
+    
+
 
     @ExceptionHandler(BadCredentialsException.class)
     public String exceptionHandler() {

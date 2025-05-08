@@ -43,6 +43,21 @@ public class UserService {
 
     }
 
+    public String addAdmin(Credentials cred) {
+        User u= new User();
+        u.setRole(Roles.ADMIN);
+        u.setFirstName(cred.getFirstName());
+        u.setLastName(cred.getLastName());
+        u.setPassword(passwordEncoder.encode(cred.getPassword()));
+        u.setEmail(cred.getEmail());
+        u.setImageUrl1("https://icon-library.com/images/default-user-icon/default-user-icon-13.jpg");
+
+
+        this.userRepository.save(u);
+        return u.getFirstName() ;
+
+    }
+
     // public void disconnect(User user){
     //     var storedUser = userRepository.findById(user.getUserId()).orElse(null);
     //     if ((storedUser != null)) {

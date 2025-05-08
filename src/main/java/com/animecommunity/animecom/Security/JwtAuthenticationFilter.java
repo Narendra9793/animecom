@@ -32,7 +32,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 
     @Autowired
-    @Qualifier("getUserDetailsService")
     private UserDetailsService userDetailsService;
 
 

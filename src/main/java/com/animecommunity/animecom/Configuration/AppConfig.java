@@ -16,8 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Configuration
 public class AppConfig {
-    @Bean("getUserDetailsService")
-    @Primary
+    @Bean
     public UserDetailsService getUserDetailsService(){
         return new UserDetailsServiceImpl() ;
     }
