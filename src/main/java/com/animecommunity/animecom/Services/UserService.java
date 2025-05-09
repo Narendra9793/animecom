@@ -1,19 +1,13 @@
 package com.animecommunity.animecom.Services;
 
-
-import org.hibernate.mapping.List;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import com.animecommunity.animecom.Dao.UserRepository;
 import com.animecommunity.animecom.Models.Credentials;
 import com.animecommunity.animecom.Models.Roles;
 import com.animecommunity.animecom.Models.User;
 
-// import com.backend.projectbackend.Models.Status;
-import java.util.ArrayList;
 
 
 
