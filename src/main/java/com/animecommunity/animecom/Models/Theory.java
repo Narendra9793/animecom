@@ -28,7 +28,7 @@ import lombok.Setter;
 
 @Table(name = "`THEORY`")
 @Entity
-public class Theory {
+public class Theory implements Likeable, Commentable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -44,4 +44,49 @@ public class Theory {
     @JsonManagedReference
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "theory", orphanRemoval = true)
     List<Like> likes = new ArrayList<>();
+
+    @JsonManagedReference
+    @OneToMany(cascade = CascadeType.ALL,  fetch = FetchType.LAZY, mappedBy = "theory",  orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
+
+    @Override
+    public void addLike(Like like) {
+        likes.add(like);
+    }
+
+    @Override
+    public int getLikeableId() {
+        return this.getTheory_Id();
+    }
+
+    public Commentable orElseThrowCommentable() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'orElseThrow'");
+    }
+
+    public Likeable orElseThrowLikeable() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'orElseThrow'");
+    }
+
+    @Override
+    public void removeLike(Like like) {
+        likes.remove(like);
+    }
+
+    @Override
+    public void addComment(Comment comment) {
+        comments.add(comment);
+    }
+
+    @Override
+    public int getCommentableId() {
+        return this.getTheory_Id();
+    }
+
+    @Override
+    public void removeComment(Comment comment) {
+        comments.remove(comment);
+    }
+
 }

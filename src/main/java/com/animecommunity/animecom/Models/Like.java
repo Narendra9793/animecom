@@ -1,5 +1,8 @@
 package com.animecommunity.animecom.Models;
 
+import java.time.LocalDateTime;
+import java.util.Date;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Column;
@@ -12,12 +15,10 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
 
 @Table(name = "`LIKES`")
@@ -29,27 +30,42 @@ public class Like {
     private int likeId;
 
     @ManyToOne
-    @JoinColumn(name = "user_id") 
     @JsonBackReference
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "question_id") 
-    @JsonBackReference
-    private Question question;
+    private String targetId;
+    private String targetType;
 
-    @ManyToOne
-    @JoinColumn(name = "theory_id") 
     @JsonBackReference
-    private Theory theory;
-
     @ManyToOne
-    @JoinColumn(name = "answer_id") 
-    @JsonBackReference
+    @JoinColumn(name = "Answer_id")
     private Answer answer;
 
-    @ManyToOne
-    @JoinColumn(name = "post_id") // This creates the foreign key column in the `COMMENT` table
     @JsonBackReference
+    @ManyToOne
+    @JoinColumn(name = "theory_id")
+    private Theory theory;
+
+    @JsonBackReference
+    @ManyToOne
+    @JoinColumn(name = "post_id")
     private Post post;
+
+    @JsonBackReference
+    @ManyToOne
+    @JoinColumn(name = "comment_id")
+    private Comment comment;
+
+    @JsonBackReference
+    @ManyToOne
+    @JoinColumn(name = "question_id")
+    private Question question;
+
+    private LocalDateTime likeAt;
+
+    public Like(){
+        this.likeAt=LocalDateTime.now();
+    }
+
+
 }

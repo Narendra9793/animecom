@@ -29,7 +29,7 @@ import lombok.Setter;
 
 @Table(name = "`QUESTION`")
 @Entity
-public class Question {
+public class Question implements Likeable{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int question_id;
@@ -49,4 +49,28 @@ public class Question {
     @OneToMany(cascade = CascadeType.ALL,  fetch = FetchType.LAZY, mappedBy = "question",  orphanRemoval = true)
     private List<Answer> answers = new ArrayList<>();
 
+    @JsonManagedReference
+    @OneToMany(cascade = CascadeType.ALL,  fetch = FetchType.LAZY, mappedBy = "question",  orphanRemoval = true)
+    List<Like> likes = new ArrayList<>();
+
+    @Override
+    public void addLike(Like like) {
+        likes.add(like);
+    }
+
+    @Override
+    public int getLikeableId() {
+        return this.getQuestion_id();
+    }
+
+
+    public Likeable orElseThrowLikeable() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'orElseThrow'");
+    }
+
+    @Override
+    public void removeLike(Like like) {
+        likes.remove(like);
+    }
 }

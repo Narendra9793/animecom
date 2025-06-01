@@ -83,19 +83,19 @@ public class AuthController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-        //http://localhost:5050/auth/admin-login
-        @PostMapping("/admin-login")
+    //http://localhost:5050/auth/admin-login
+    @PostMapping("/admin-login")
         public ResponseEntity<JwtResponse> adminLogin(@RequestBody JwtRequest request) {
-            this.doAuthenticate(request.getEmail(), request.getPassword());
+        this.doAuthenticate(request.getEmail(), request.getPassword());
 
-            UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
-            String token = this.helper.generateToken(userDetails);
-            System.out.println("Token : " + token);
-             //////////////////////////
-            User loggedUser=this.userRepository.getUserByemail(request.getEmail());
-            this.userRepository.save(loggedUser);
-            System.out.println(loggedUser);
-            //////////////////////////
+        UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
+        String token = this.helper.generateToken(userDetails);
+        System.out.println("Token : " + token);
+        //////////////////////////
+        User loggedUser=this.userRepository.getUserByemail(request.getEmail());
+        this.userRepository.save(loggedUser);
+        System.out.println(loggedUser);
+        //////////////////////////
         JwtResponse response = JwtResponse.builder()
         .jwtToken(token)
         .username(userDetails.getUsername())
@@ -103,7 +103,7 @@ public class AuthController {
         .build();
     
         return new ResponseEntity<>(response, HttpStatus.OK);
-        }
+    }
         
 
 
@@ -153,12 +153,12 @@ public class AuthController {
 
     }
 
-        //http://localhost:5050/auth/admin-register
-        @PostMapping("/admin-register")
-        public String adminRegister(@RequestBody Credentials cred){
-            String str = this.userService.addAdmin(cred);
-            return "Admin added with name " + str; 
-        }
+    //http://localhost:5050/auth/admin-register
+    @PostMapping("/admin-register")
+    public String adminRegister(@RequestBody Credentials cred){
+        String str = this.userService.addAdmin(cred);
+        return "Admin added with name " + str; 
+    }
     
 
 

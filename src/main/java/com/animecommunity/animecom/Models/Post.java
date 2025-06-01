@@ -30,7 +30,7 @@ import lombok.Setter;
 
 @Table(name = "`POST`")
 @Entity
-public class Post{
+public class Post implements Likeable, Commentable{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int post_Id;
@@ -44,12 +44,53 @@ public class Post{
     @JsonBackReference
     private User user;
 
-
     @JsonManagedReference
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "post", orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL,  fetch = FetchType.LAZY, mappedBy = "post",  orphanRemoval = true)
     List<Like> likes = new ArrayList<>();
 
     @JsonManagedReference
     @OneToMany(cascade = CascadeType.ALL,  fetch = FetchType.LAZY, mappedBy = "post",  orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
+
+    @Override
+    public void addLike(Like like) {
+        likes.add(like);
+    }
+
+    @Override
+    public int getLikeableId() {
+        return this.getPost_Id();
+    }
+
+    public Commentable orElseThrowCommentable() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'orElseThrow'");
+    }
+
+    public Likeable orElseThrowLikeable() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'orElseThrow'");
+    }
+
+    @Override
+    public void removeLike(Like like) {
+        likes.remove(like);
+    }
+
+    @Override
+    public void addComment(Comment comment) {
+        comments.add(comment);
+    }
+
+    @Override
+    public int getCommentableId() {
+        return this.getPost_Id();
+    }
+
+    @Override
+    public void removeComment(Comment comment) {
+        comments.remove(comment);
+    }
+
+
 }

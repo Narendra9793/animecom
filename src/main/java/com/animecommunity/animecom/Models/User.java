@@ -82,6 +82,10 @@ public class User {
     private List<Comment> comments = new ArrayList<>();
 
     @JsonManagedReference
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Like> likes = new ArrayList<>();
+
+    @JsonManagedReference
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user", orphanRemoval = true)
     List<Answer> answers = new ArrayList<>();
 

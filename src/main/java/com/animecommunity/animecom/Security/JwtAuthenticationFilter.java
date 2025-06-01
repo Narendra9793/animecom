@@ -4,7 +4,6 @@ package com.animecommunity.animecom.Security;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,12 +11,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
-
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.io.IOException;
-
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -41,12 +37,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     @Override
-protected boolean shouldNotFilter(HttpServletRequest request) {
-    String path = request.getRequestURI();
-    System.out.println("shouldNotFilter called for: " + request.getRequestURI());
-
-    return path.startsWith("/auth/") || path.startsWith("/home/");
-}
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+       String path = request.getRequestURI();
+       return path.startsWith("/auth/") || path.startsWith("/home/");
+    }
 
 
 
@@ -59,7 +53,6 @@ protected boolean shouldNotFilter(HttpServletRequest request) {
         logger.info(" Header :  {}", requestHeader);
         String username = null;
         String token = null;
-        System.out.println("JWT filter called on:=================================================================== " + request.getRequestURI());
 
         if (requestHeader != null && requestHeader.startsWith("Bearer")) {
             //looking good
