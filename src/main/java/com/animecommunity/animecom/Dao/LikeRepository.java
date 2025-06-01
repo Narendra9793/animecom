@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface LikeRepository extends JpaRepository<Like, Integer> {
 
-    Like findBytargetTypeandtargetId(String targetID, String targetType);
+    Like findBytargetId(String targetID);
     
 }

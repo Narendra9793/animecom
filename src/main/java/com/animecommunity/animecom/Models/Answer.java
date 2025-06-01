@@ -33,7 +33,7 @@ import lombok.Setter;
 public class Answer implements Likeable, Commentable{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int Answer_id;
+    private int answerId;
     private String answer_img_url;
 
     @ManyToOne
@@ -65,7 +65,7 @@ public class Answer implements Likeable, Commentable{
 
     @Override
     public int getLikeableId() {
-        return this.getAnswer_id();
+        return this.getAnswerId();
     }
 
     public Commentable orElseThrowCommentable() {
@@ -90,7 +90,7 @@ public class Answer implements Likeable, Commentable{
 
     @Override
     public int getCommentableId() {
-        return this.getAnswer_id();
+        return this.getAnswerId();
     }
 
     @Override

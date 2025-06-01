@@ -12,6 +12,6 @@ import org.springframework.data.repository.query.Param;
 public interface TheoryRepository extends JpaRepository<Theory, Integer> {
 
     @Query("SELECT t FROM Theory t WHERE t.theory_Id = :theory_Id")
-    Question getTheoryBytheory_Id(@Param("theory_Id") int theory_Id);
+    Theory getTheoryBytheory_Id(@Param("theory_Id") int theory_Id);
     
 }

@@ -109,7 +109,7 @@ public class UserService {
         ans.setAnswer_img_url(this.fileService.uploadMedia(file, user.getUserId()));
         ans.setAnswer_statement(answer_statement);
         ans.setUser(user);
-        Question ques= this.quesRepository.findQuestionByquestion_id(questionId);
+        Question ques= this.quesRepository.getQuestionByquestion_Id(questionId);
         ques.getAnswers().add(ans);
         this.quesRepository.save(ques);
         this.ansRepository.save(ans);
@@ -173,7 +173,7 @@ public class UserService {
                 likeAble= this.quesRepository.getQuestionByquestion_Id(Integer.parseInt(targetID)).orElseThrowLikeable();
                 break;
             case "answer":
-                likeAble= this.ansRepository.getAnswerByAnswer_Id(Integer.parseInt(targetID)).orElseThrowLikeable();
+                likeAble= this.ansRepository.findByanswerId(Integer.parseInt(targetID)).orElseThrowLikeable();
                 break;
             case "theory":
                 likeAble= this.theoryRepository.getTheoryBytheory_Id(Integer.parseInt(targetID)).orElseThrowLikeable();
@@ -205,7 +205,7 @@ public class UserService {
                 likeAble= this.quesRepository.getQuestionByquestion_Id(Integer.parseInt(targetID)).orElseThrowLikeable();
                 break;
             case "answer":
-                likeAble= this.ansRepository.getAnswerByAnswer_Id(Integer.parseInt(targetID)).orElseThrowLikeable();
+                likeAble= this.ansRepository.findByanswerId(Integer.parseInt(targetID)).orElseThrowLikeable();
                 break;
             case "theory":
                 likeAble= this.theoryRepository.getTheoryBytheory_Id(Integer.parseInt(targetID)).orElseThrowLikeable();
@@ -214,7 +214,7 @@ public class UserService {
                 throw new IllegalArgumentException("Unknown like type");
         }
 
-        Like like =this.likeRepository.findBytargetTypeandtargetId(targetID, targetType);
+        Like like =this.likeRepository.findBytargetId(targetID);
         user.getLikes().remove(like);
         this.userRepository.save(user);
         likeAble.removeLike(like);
@@ -259,13 +259,13 @@ public class UserService {
         switch (targetType.toLowerCase()) {
 
             case "post":
-                commentable = this.postRepository.findBypost_Id(Integer.parseInt(targetID)).orElseThrowCommentable();
+                commentable = this.postRepository.getPostBypost_Id(Integer.parseInt(targetID)).orElseThrowCommentable();
                 break;
             case "answer":
-                commentable = this.ansRepository.findByanswer_Id(Integer.parseInt(targetID)).orElseThrowCommentable();
+                commentable = this.ansRepository.findByanswerId(Integer.parseInt(targetID)).orElseThrowCommentable();
                 break;
             case "theory":
-                commentable = this.theoryRepository.findBytheory_Id(Integer.parseInt(targetID)).orElseThrowCommentable();
+                commentable = this.theoryRepository.getTheoryBytheory_Id(Integer.parseInt(targetID)).orElseThrowCommentable();
                 break;
             default:
                 throw new IllegalArgumentException("Unknown like type");
@@ -284,19 +284,19 @@ public class UserService {
         switch (targetType.toLowerCase()) {
 
             case "post":
-                commentable = this.postRepository.findBypost_Id(Integer.parseInt(targetID)).orElseThrowCommentable();
+                commentable = this.postRepository.getPostBypost_Id(Integer.parseInt(targetID)).orElseThrowCommentable();
                 break;
             case "answer":
-                commentable = this.ansRepository.findByanswer_Id(Integer.parseInt(targetID)).orElseThrowCommentable();
+                commentable = this.ansRepository.findByanswerId(Integer.parseInt(targetID)).orElseThrowCommentable();
                 break;
             case "theory":
-                commentable = this.theoryRepository.findBytheory_Id(Integer.parseInt(targetID)).orElseThrowCommentable();
+                commentable = this.theoryRepository.getTheoryBytheory_Id(Integer.parseInt(targetID)).orElseThrowCommentable();
                 break;
             default:
                 throw new IllegalArgumentException("Unknown like type");
         }
 
-        Comment comment= this.commentRepository.findBycommentId(Integer.parseInt(targetID));
+        Comment comment= this.commentRepository.getCommentBycommentId(Integer.parseInt(targetID));
         user.getComments().add(comment);
         this.userRepository.save(user);
         commentable.removeComment(comment);

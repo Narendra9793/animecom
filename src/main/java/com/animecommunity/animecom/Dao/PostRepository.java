@@ -11,7 +11,7 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
 
 
 
-    @Query("SELECT p FROM Question p WHERE p.post_Id = :post_Id")
+    @Query("SELECT p FROM Post p WHERE p.post_Id = :post_Id")
     Post getPostBypost_Id(@Param("post_Id") int post_Id);
     
 }
