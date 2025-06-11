@@ -64,6 +64,8 @@ public class User {
     private String imageUrl3;
     private String imageUrl4;
 
+    private Room room;
+
 
     @JsonManagedReference
     @OneToMany(cascade = CascadeType.ALL,  fetch = FetchType.LAZY, mappedBy = "user",  orphanRemoval = true)

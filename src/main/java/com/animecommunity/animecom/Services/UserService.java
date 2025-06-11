@@ -1,12 +1,10 @@
 package com.animecommunity.animecom.Services;
 
 import java.io.IOException;
-import java.security.Principal;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.animecommunity.animecom.Dao.AnswerRepository;

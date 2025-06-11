@@ -51,7 +51,7 @@ public class UserController {
     public String createAnswer(@PathVariable int questionId, @RequestBody String answer_statement, MultipartFile file,  Principal principal) throws IOException {
         User user = this.userRepository.getUserByusername(principal.getName());
         Answer ans = this.userService.createAnswer(answer_statement,questionId,  file, user);
-        return "Answer created with Id: " + ans.getAnswer_id();
+        return "Answer created with Id: " + ans.getAnswerId();
     }
 
     //http://localhost:5050/api/user/create-theory
